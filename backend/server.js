@@ -7,26 +7,32 @@ import userRouter from "./routes/userRoute.js"
 import doctorRouter from "./routes/doctorRoute.js"
 import adminRouter from "./routes/adminRoute.js"
 
-// app config
 const app = express()
 const port = process.env.PORT || 4000
+
+// Connect Services
 connectDB()
 connectCloudinary()
 
-// middlewares
+// Middleware
 app.use(express.json())
 
-// ✅ UPDATED CORS CONFIGURATION
+// ✅ AUTOMATIC CORS CONFIGURATION
+// This will work regardless of your new Vercel links
 app.use(cors({
-    origin: [
-        "https://prescripto-frontend-iota-coral.vercel.app",
-        "https://prescripto-admin-one-tan.vercel.app"
-    ],
+    origin: (origin, callback) => {
+        // Allows any Vercel URL, Localhost, or requests with no origin (like mobile/Postman)
+        if (!origin || origin.endsWith(".vercel.app") || origin.includes("localhost")) {
+            callback(null, true);
+        } else {
+            callback(new Error("Not allowed by CORS"));
+        }
+    },
     credentials: true,
     methods: ["GET", "POST", "PUT", "DELETE"]
 }))
 
-// api endpoints
+// API Endpoints
 app.use("/api/user", userRouter)
 app.use("/api/admin", adminRouter)
 app.use("/api/doctor", doctorRouter)
@@ -34,6 +40,5 @@ app.use("/api/doctor", doctorRouter)
 app.get("/", (req, res) => {
   res.send("API Working")
 });
-//working
-
+//will work
 app.listen(port, () => console.log(`Server started on PORT:${port}`))
