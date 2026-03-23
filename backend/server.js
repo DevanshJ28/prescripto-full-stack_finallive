@@ -15,7 +15,16 @@ connectCloudinary()
 
 // middlewares
 app.use(express.json())
-app.use(cors())
+
+// ✅ UPDATED CORS CONFIGURATION
+app.use(cors({
+    origin: [
+        "https://prescripto-frontend-iota-coral.vercel.app",
+        "https://prescripto-admin-one-tan.vercel.app"
+    ],
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE"]
+}))
 
 // api endpoints
 app.use("/api/user", userRouter)
@@ -25,5 +34,6 @@ app.use("/api/doctor", doctorRouter)
 app.get("/", (req, res) => {
   res.send("API Working")
 });
+//working
 
 app.listen(port, () => console.log(`Server started on PORT:${port}`))
